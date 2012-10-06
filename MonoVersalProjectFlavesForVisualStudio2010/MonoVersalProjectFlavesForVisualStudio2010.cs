@@ -91,6 +91,7 @@ namespace HolisticWare.MonoVersalFlave2010
 	// in the Help/About dialog of Visual Studio.
 	[InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
 	[Guid(GuidList.guidMonoFlave2010PkgString)]
+	// mc++ [Guid(GuidList.List["guidMonoFlave2010PkgString"])] //  must be constant
 	public sealed class MonoVersalProjectFlavesForVisualStudio2010 : Package
 	{
 		/// <summary>

@@ -35,11 +35,12 @@ XNA (XBox)										{2DF5C3F4-5A5F-47a9-8E94-23B4456F55E2}
 XNA (Zune)										{D399B71A-8929-442a-A9AC-8BEC78BB2433}
 SharePoint (VB.NET)								{EC05E597-79D4-47f3-ADA0-324C4F7C7484}
 SharePoint (C#)									{593B0543-81F6-4436-BA1E-4747859CAAE2}
+SharePoint Solution								{9E5D3E2D-E4E2-418e-8D80-2F0DA9A94F9A}
 Silverlight										{A1591282-1198-4647-A2B1-27E5FF5F6F3B}
-MVC 1:											{603c0e0b-db56-11dc-be95-000d561079b0}
-MVC 2:											{F85E285D-A4E0-4152-9332-AB1D724D3325}
-MVC 3:											{E53F8FEA-EAE0-44A6-8774-FFD645390401}
-MVC 4:											{E3E379DF-F4C6-4180-9B81-6769533ABE47}
+ASP.net MVC1									{603c0e0b-db56-11dc-be95-000d561079b0}
+ASP.net MVC2									{F85E285D-A4E0-4152-9332-AB1D724D3325}
+ASP.net MVC3									{E53F8FEA-EAE0-44A6-8774-FFD645390401}
+ASP.net MVC4									{E3E379DF-F4C6-4180-9B81-6769533ABE47}
 
 
 	http://weblogs.asp.net/leftslipper/archive/2009/01/20/opening-an-asp-net-mvc-project-without-having-asp-net-mvc-installed-the-project-type-is-not-supported-by-this-installation.aspx
@@ -93,12 +94,6 @@ http://social.msdn.microsoft.com/Forums/en/vsx/thread/d9d05cdc-96a1-4044-95d8-a4
 
 Sample
 
-	Compact Framework Smart Device
-	    <ProjectTypeGuids>
-			{4D628B5B-2FBC-4AA6-8C16-197242AEB884};		<!-- Smart Device (C#) -->
-			{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}		<!-- c# project -->
-		</ProjectTypeGuids>
-
 	MonoMac
 	    <ProjectTypeGuids>
 			{948B3504-5B70-4649-8FE4-BDE1FB46EC69};
@@ -151,4 +146,27 @@ Sample
 		https://github.com/mono/mono/tree/master/mcs/tools/xbuild/xbuild
 
 
+	Compact Framework Smart Device
+	    <ProjectTypeGuids>
+			{4D628B5B-2FBC-4AA6-8C16-197242AEB884};		<!-- Smart Device (C#) -->
+			{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}		<!-- c# project -->
+		</ProjectTypeGuids>
 
+		c:\WIndows\Microsoft.Net\Framework\v4.0.30319\Microsoft.CompactFramework.Csharp.targets
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		http://robrich.org/archive/2010/04/20/working-with-both-vs-2010-and-2008-on-the-team.aspx
+		
+		
