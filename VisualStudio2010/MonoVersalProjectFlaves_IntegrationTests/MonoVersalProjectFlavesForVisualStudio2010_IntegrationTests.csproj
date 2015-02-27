@@ -67,12 +67,6 @@
   <ItemGroup>
     <None Include="Key.snk" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MonoVersalProjectFlavesForVisualStudio2010\MonoVersalProjectFlavesForVisualStudio2010.csproj">
-      <Project>{D91FD2FF-3084-43D2-A203-32FA7B7ECC14}</Project>
-      <Name>MonoFlave2010</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
