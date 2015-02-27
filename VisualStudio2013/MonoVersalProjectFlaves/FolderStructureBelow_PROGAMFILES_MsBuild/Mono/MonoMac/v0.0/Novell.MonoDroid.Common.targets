@@ -1,0 +1,1085 @@
+<!--
+***********************************************************************************************
+Novell.MonoDroid.Common.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+  created a backup copy.  Incorrect changes to this file will make it
+  impossible to load or build your projects from the command-line or the IDE.
+
+This file imports the version- and platform-specific targets for the project importing
+this file. This file also defines targets to produce an error if the specified targets
+file does not exist, but the project is built anyway (command-line or IDE build).
+
+Copyright (C) Novell. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.Mandroid" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.RemoveUnknownFiles" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.AndroidComputeResPaths" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.AndroidSignPackage" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.AndroidCreateDebugKey" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.AndroidZipAlign" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.GetAndroidPackageName" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Novell.MonoDroid.Build.Tasks.ResolveSdks" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Mono.Android.Build.Tasks.ExternalStorageDirectory" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Mono.Android.Build.Tasks.InstallPackageAssemblies" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Mono.Android.Build.Tasks.MissingPlatformPackages" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.Aapt" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.BuildApk" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.CompileToDalvik" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.ConvertDebuggingFiles" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.ConvertResourcesCases" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.CopyIfChanged" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.CopyResource" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.CreateResgenManifest" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.CreateTemporaryDirectory" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GenerateResourceDesigner" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GenerateJavaStubs" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GeneratePackageManagerJava" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GetAndroidDefineConstants" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GetApiLevelFromFramework" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GetAppSettingsDirectory" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GetFilesThatExist" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GetJavaPlatformJar" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GetMonoPlatformJar" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.Javac" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.LinkAssemblies" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.RemoveDirFixed" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.RemoveRegisterAttribute" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.ResolveAssemblies" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.GetExtraPackages" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.CopyGeneratedJavaResourceClasses" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+<UsingTask TaskName="Xamarin.Android.Tasks.ResolveLibraryProjectImports" AssemblyFile="Novell.MonoDroid.Build.Tasks.dll" />
+
+<!--
+*******************************************
+          Framework Setup
+*******************************************
+-->
+
+<!-- workaround for broken ResolveReferences deps in xbuild 2.8 -->
+<PropertyGroup Condition="'$(ResolveAssemblyReferencesDependsOn)'==''">
+	<ResolveReferencesDependsOn>GetFrameworkPaths;$(ResolveReferencesDependsOn)</ResolveReferencesDependsOn>
+</PropertyGroup>
+
+<!-- Get our Build Action to show up in VS -->
+<ItemGroup>
+	<AvailableItemName Include="AndroidAsset" />  
+	<AvailableItemName Include="AndroidJavaSource" />
+	<AvailableItemName Include="AndroidJavaLibrary" />
+	<AvailableItemName Include="AndroidNativeLibrary" />
+	<AvailableItemName Include="AndroidResource" />  
+	<AvailableItemName Include="LinkDescription" />  
+</ItemGroup>
+
+<!-- Version/fx properties -->
+<PropertyGroup>
+	<MonoAndroidVersion Condition="'$(MonoAndroidVersion)' == ''">v1.0</MonoAndroidVersion>
+	<AndroidApplication Condition="'$(AndroidApplication)' == ''">false</AndroidApplication>
+	<TargetFrameworkIdentifier Condition="'$(TargetFrameworkIdentifier)' == ''">MonoAndroid</TargetFrameworkIdentifier>
+	<TargetFrameworkVersion Condition="'$(TargetFrameworkVersion)' == ''">$(MonoAndroidVersion)</TargetFrameworkVersion>
+	<AndroidUseSharedRuntime Condition="'$(AndroidUseSharedRuntime)' == ''">true</AndroidUseSharedRuntime>
+	<AndroidUpdateResourceReferences Condition="'$(AndroidUpdateResourceReferences)' == ''">True</AndroidUpdateResourceReferences>
+	<AndroidSupportedAbis Condition="'$(AndroidSupportedAbis)' == ''">armeabi</AndroidSupportedAbis>
+	<EmbedAssembliesIntoApk Condition="'$(EmbedAssembliesIntoApk)' == '' And '$(Configuration)' == 'Debug'">False</EmbedAssembliesIntoApk>
+	<EmbedAssembliesIntoApk Condition="'$(EmbedAssembliesIntoApk)' == '' And '$(Configuration)' != 'Debug'">True</EmbedAssembliesIntoApk>
+	<DeployExternal Condition="'$(DeployExternal)' == ''">False</DeployExternal>
+
+	<!-- If the user is using the shared runtime, we are going to
+	     partially override their supported Abis and support x86 as well -->
+	<AndroidSupportedAbis Condition="'$(AndroidUseSharedRuntime)'">$(AndroidSupportedAbis);x86</AndroidSupportedAbis>
+</PropertyGroup>
+
+<!-- When looking for related files to copy, look for Mono debugging files as well -->
+<PropertyGroup>
+	<AllowedReferenceRelatedFileExtensions>
+		$(AllowedReferenceRelatedFileExtensions);
+		.dll.mdb;
+		.exe.mdb
+	</AllowedReferenceRelatedFileExtensions>
+</PropertyGroup>
+
+<!-- override GetFrameworkPaths since xbuild doesn't yet support TargetFrameworkIdentifier -->
+<Target Name="GetFrameworkPaths" DependsOnTargets="_ResolveMonoAndroidSdks" Condition="'$(OS)' == 'Unix'">
+	<CreateItem Include="$(_MonoAndroidFrameworkDirectories)">
+		<Output TaskParameter="Include" ItemName="TargetFrameworkDirectories"/>
+		<Output TaskParameter="Include" ItemName="_FrameworkPath"/>
+	</CreateItem>
+	<CreateProperty Value="smcs">
+		<Output TaskParameter="Value" PropertyName="CscToolExe"/>
+	</CreateProperty>
+	<CreateProperty Value="$(_MonoAndroidBinDirectory)">
+		<Output TaskParameter="Value" PropertyName="CscToolPath"/>
+	</CreateProperty>
+	<CreateProperty Value="@(TargetFrameworkDirectories)">
+		<Output TaskParameter="Value" PropertyName="TargetFrameworkDirectory"/>
+		<!-- Workaround: Set $(_TargetFrameworkDirectories), so that GetReferenceAssemblyPaths doesn't
+		     try to resolve the $(TargetFrameworkMoniker), as this target file doesn't support that
+		     with xbuild, yet. -->
+		<Output TaskParameter="Value" PropertyName="_TargetFrameworkDirectories" Condition="'$(OS)' == 'Unix'"/>
+	</CreateProperty>
+</Target>
+
+<!--
+*******************************************
+          Application Build
+*******************************************
+-->
+
+<PropertyGroup Condition="'$(AndroidApplication)' != '' And $(AndroidApplication)">
+	<BuildDependsOn>
+    UpdateAndroidAssets;
+    UpdateAndroidResources;
+    $(BuildDependsOn);
+    _CompileDex;
+  </BuildDependsOn>
+</PropertyGroup>
+
+<PropertyGroup Condition="'$(AndroidApplication)' == '' Or !($(AndroidApplication))">
+  <BuildDependsOn>
+    _AddAndroidDefines;
+    $(BuildDependsOn);
+  </BuildDependsOn>
+</PropertyGroup>
+
+<PropertyGroup>
+	<PrepareForRunDependsOn>
+		$(PrepareForRunDependsOn);
+		ConvertDebuggingFiles;
+	</PrepareForRunDependsOn>
+</PropertyGroup>
+
+<PropertyGroup Condition="'$(AndroidApplication)' != '' And $(AndroidApplication)">
+	<PrepareForRunDependsOn>
+		$(PrepareForRunDependsOn);
+	</PrepareForRunDependsOn>
+</PropertyGroup>
+
+<PropertyGroup>
+  <PrepareForRunDependsOn>
+    $(PrepareForRunDependsOn);
+    _CollectMonoAndroidOutputs;
+  </PrepareForRunDependsOn>
+</PropertyGroup>
+
+<PropertyGroup Condition="'$(AndroidApplication)' != '' And $(AndroidApplication)">
+	<CleanDependsOn>
+		$(CleanDependsOn);
+		_CleanMonoAndroidIntermediateDir;
+	</CleanDependsOn>
+</PropertyGroup>
+
+<Target Name="_ValidateAndroidPackageProperties" DependsOnTargets="_ResolveMonoAndroidSdks">
+	<CreateProperty Value="$(ProjectDir)$(AndroidManifest)" Condition="'$(AndroidManifest)' != ''">
+		<Output TaskParameter="Value" PropertyName="_AndroidManifestAbs"/>
+	</CreateProperty>
+	<Error Text="AndroidManifest file does not exist" Condition="'$(_AndroidManifestAbs)'!='' And !Exists ('$(_AndroidManifestAbs)')"/>
+
+	<GetAndroidPackageName ManifestFile="$(_AndroidManifestAbs)" AssemblyName="$(AssemblyName)">
+		<Output TaskParameter="PackageName" PropertyName="_AndroidPackage" />
+	</GetAndroidPackageName>
+	<Error Text="Could not determine package name." Condition="'$(_AndroidPackage)' == ''" />
+
+	<GetJavaPlatformJar
+		AndroidSdkDirectory="$(AndroidSdkDirectory)"
+		AndroidSdkPlatform="$(AndroidApiLevel)"
+		AndroidManifest="$(_AndroidManifestAbs)">
+			<Output TaskParameter="JavaPlatformJarPath" PropertyName="JavaPlatformJarPath" />
+	</GetJavaPlatformJar>
+
+	<CreateProperty Value="$(MonoAndroidIntermediate)android\bin\$(_AndroidPackage).apk">
+		<Output TaskParameter="Value" PropertyName="ApkFileIntermediate"/>
+	</CreateProperty>
+	<CreateProperty Value="$(OutDir)$(_AndroidPackage).apk">
+		<Output TaskParameter="Value" PropertyName="ApkFile"/>
+	</CreateProperty>
+	<CreateProperty Value="$(OutDir)$(_AndroidPackage)-Signed.apk">
+		<Output TaskParameter="Value" PropertyName="ApkFileSigned"/>
+	</CreateProperty>
+</Target>
+
+<!--
+On Windows/MSBuild, use the MSBuild 4.0 TargetFrameworkVersion and reference
+assemblies system to resolve the MonoAndroid framework directories
+-->
+<Target Name="_ResolveMonoAndroidFrameworkWindows" Condition="'$(Os)'!='Unix'" DependsOnTargets="GetReferenceAssemblyPaths" >
+	<!-- MSBuild is going to calculate this for us -->
+	<CreateProperty Value="$(_TargetFrameworkDirectories)" Condition="'$(MonoAndroidFrameworkDirectories)'==''">
+		<Output TaskParameter="Value" PropertyName="MonoAndroidFrameworkDirectories"/>
+	</CreateProperty>
+</Target>
+
+<Target Name="_AddAndroidDefines">
+	<!-- Convert Android version (v2.2) to API Level (8) -->
+	<GetApiLevelFromFramework TargetFrameworkVersion="$(TargetFrameworkVersion)">
+		<Output TaskParameter="AndroidApiLevel" PropertyName="AndroidApiLevel" />
+	</GetApiLevelFromFramework>
+
+	<!-- Get the defined constants for this API Level -->
+	<GetAndroidDefineConstants AndroidApiLevel="$(AndroidApiLevel)">
+		<Output TaskParameter="AndroidDefineConstants" PropertyName="AndroidDefineConstants" />
+	</GetAndroidDefineConstants>
+
+	<CreateProperty Value="$(DefineConstants);$(AndroidDefineConstants)">
+		<Output TaskParameter="Value" PropertyName="DefineConstants" />
+	</CreateProperty>
+</Target>
+  
+<!--
+Resolves tools paths and SDK paths, and verifies everything is installed.
+If the framework directories haven't been resolved, it takes care of those too,
+because xbuild doesn't support framework reference assemblies.
+ -->
+<Target Name="_ResolveMonoAndroidSdks" DependsOnTargets="_ResolveMonoAndroidFrameworkWindows;_AddAndroidDefines">
+	<ResolveSdks AndroidApiLevel="$(AndroidApiLevel)">
+		<Output TaskParameter="AndroidSdkPath" PropertyName="AndroidSdkDirectory" Condition="'$(AndroidSdkDirectory)'==''" />
+		<Output TaskParameter="JavaSdkPath" PropertyName="JavaSdkDirectory" Condition="'$(JavaSdkDirectory)'==''" />
+		<Output TaskParameter="MonoAndroidToolsPath" PropertyName="MonoAndroidToolsDirectory" Condition="'$(MonoAndroidToolsDirectory)'==''" />
+		<Output TaskParameter="MonoAndroidBinPath" PropertyName="MonoAndroidBinDirectory" Condition="'$(MonoAndroidBinDirectory)'==''" />
+		<Output TaskParameter="MonoAndroidFrameworkPath" PropertyName="MonoAndroidFrameworkDirectories" Condition="'$(MonoAndroidFrameworkDirectories)'==''" />
+	</ResolveSdks>
+
+	<Error Text="Could not locate MonoAndroid SDK." Condition="'$(MonoAndroidToolsDirectory)'=='' Or '$(MonoAndroidFrameworkDirectories)'==''" />
+	<Error Text="Could not locate Android SDK." Condition="'$(AndroidSdkDirectory)'==''" />
+	<Error Text="Could not locate Java 6 or 7 SDK.  (Download from http://www.oracle.com/technetwork/java/javase/downloads.)" Condition="'$(JavaSdkDirectory)'==''" />
+
+	<!-- AppData for Mono for Android-->
+	<GetAppSettingsDirectory>
+		<Output TaskParameter="AppSettingsDirectory" PropertyName="AppSettingsDirectory" Condition="'$(AppSettingsDirectory)'==''" />
+	</GetAppSettingsDirectory>
+
+	<!-- ensure a version of paths with trailing slashes even if overridden by /p:foo=bar -->
+	<CreateProperty Value="$(AppSettingsDirectory)">
+		<Output TaskParameter="Value" PropertyName="_AppSettingsDirectory"/>
+	</CreateProperty>
+	<CreateProperty Value="$(_AppSettingsDirectory)\">
+		<Output TaskParameter="Value" PropertyName="_AppSettingsDirectory"
+			Condition="!HasTrailingSlash('$(_AppSettingsDirectory)')" />
+	</CreateProperty>
+
+	<CreateProperty Value="$(_AppSettingsDirectory)debug.keystore">
+		<Output TaskParameter="Value" PropertyName="_ApkDebugKeyStore"/>
+	</CreateProperty>
+
+	<CreateProperty Value="$(MonoAndroidToolsDirectory)">
+		<Output TaskParameter="Value" PropertyName="_MonoAndroidToolsDirectory"/>
+	</CreateProperty>
+	<CreateProperty Value="$(_MonoAndroidToolsDirectory)\">
+		<Output TaskParameter="Value" PropertyName="_MonoAndroidToolsDirectory"
+			Condition="!HasTrailingSlash('$(_MonoAndroidToolsDirectory)')" />
+	</CreateProperty>
+
+	<CreateProperty Value="$(MonoAndroidBinDirectory)">
+		<Output TaskParameter="Value" PropertyName="_MonoAndroidBinDirectory"/>
+	</CreateProperty>
+	<CreateProperty Value="$(_MonoAndroidBinDirectory)\">
+		<Output TaskParameter="Value" PropertyName="_MonoAndroidBinDirectory"
+			Condition="!HasTrailingSlash('$(_MonoAndroidBinDirectory)')" />
+	</CreateProperty>
+	
+	<CreateProperty Value="$(MonoAndroidFrameworkDirectories)">
+		<Output TaskParameter="Value" PropertyName="_MonoAndroidFrameworkDirectories"/>
+	</CreateProperty>
+		
+	<CreateProperty Value="$(AndroidSdkDirectory)">
+		<Output TaskParameter="Value" PropertyName="_AndroidSdkDirectory"/>
+	</CreateProperty>
+	<CreateProperty Value="$(_AndroidSdkDirectory)\">
+		<Output TaskParameter="Value" PropertyName="_AndroidSdkDirectory"
+			Condition="!HasTrailingSlash('$(_AndroidSdkDirectory)')" />
+	</CreateProperty>
+	
+	<CreateProperty Value="$(JavaSdkDirectory)">
+		<Output TaskParameter="Value" PropertyName="_JavaSdkDirectory"/>
+	</CreateProperty>
+	<CreateProperty Value="$(_JavaSdkDirectory)\">
+		<Output TaskParameter="Value" PropertyName="_JavaSdkDirectory"
+			Condition="!HasTrailingSlash('$(_JavaSdkDirectory)')" />
+	</CreateProperty>
+	
+	<Message Text="MonoAndroid Tools: $(_MonoAndroidToolsDirectory)"/>
+	<Message Text="MonoAndroid Framework: $(_MonoAndroidFrameworkDirectories)"/>
+	<Message Text="MonoAndroid Binaries: $(_MonoAndroidBinDirectory)"/>
+	<Message Text="Android SDK: $(_AndroidSdkDirectory)"/>
+	<Message Text="Java SDK: $(_JavaSdkDirectory)"/>
+	
+	<!-- Misc paths -->
+
+	<CreateProperty Value="$(_AndroidSdkDirectory)tools\">
+		<Output TaskParameter="Value" PropertyName="_AndroidToolsDirectory"/>
+	</CreateProperty>
+
+	<CreateProperty Value="$(_AndroidSdkDirectory)platform-tools\">
+		<Output TaskParameter="Value" PropertyName="_AndroidPlatformToolsDirectory"/>
+	</CreateProperty>
+</Target>
+
+<!-- uploadflags.txt
+	- This file says which devices this package has been deployed to.
+	- Need to delete on rebuild so package will get redeployed. -->
+<PropertyGroup>
+	<_UploadFlagFile>$(IntermediateOutputPath)uploadflags.txt</_UploadFlagFile>
+</PropertyGroup>
+
+<!-- Assets build properties -->
+<PropertyGroup>
+	<MonoAndroidAssetsDirIntermediate>$(IntermediateOutputPath)assets\</MonoAndroidAssetsDirIntermediate>
+	<MonoAndroidAssetsPrefix Condition="'$(MonoAndroidAssetsPrefix)' == ''">Assets</MonoAndroidAssetsPrefix>
+</PropertyGroup>
+
+<!-- Assets Build -->
+
+<Target Name="UpdateAndroidAssets"
+	DependsOnTargets="_ComputeAndroidAssetsPaths;_GenerateAndroidAssetsDir" />
+
+<Target Name="_ComputeAndroidAssetsPaths">
+	<AndroidComputeResPaths ResourceFiles="@(AndroidAsset)" IntermediateDir="$(MonoAndroidAssetsDirIntermediate)" Prefixes="$(MonoAndroidAssetsPrefix)">
+		<Output ItemName="_AndroidAssetsDest" TaskParameter="IntermediateFiles" />
+	</AndroidComputeResPaths>
+</Target>
+
+<Target Name="_GenerateAndroidAssetsDir"
+	Inputs="$(MSBuildAllProjects);@(AndroidAsset)"
+	Outputs="@(_AndroidAssetsDest)">
+	<MakeDir Directories="$(MonoAndroidAssetsDirIntermediate)" />
+	<Copy SourceFiles="@(AndroidAsset)" DestinationFiles="@(_AndroidAssetsDest)" SkipUnchangedFiles="true" />
+	<RemoveUnknownFiles Files="@(_AndroidAssetsDest)" Directory="$(MonoAndroidAssetsDirIntermediate)" RemoveDirectories="true" />
+</Target>
+
+<!-- Resource build properties -->
+<PropertyGroup>
+	<MonoAndroidResDirIntermediate>$(IntermediateOutputPath)res\</MonoAndroidResDirIntermediate>
+	<MonoAndroidIntermediateAssetsDir>$(IntermediateOutputPath)android\assets\</MonoAndroidIntermediateAssetsDir>
+	<MonoAndroidIntermediateAssemblyDir>$(IntermediateOutputPath)assemblies\</MonoAndroidIntermediateAssemblyDir>
+	<MonoAndroidResourcePrefix Condition="'$(MonoAndroidResourcePrefix)' == ''">Resources</MonoAndroidResourcePrefix>
+	<MonoAndroidIntermediate>$(IntermediateOutputPath)</MonoAndroidIntermediate>
+	<_AndroidResgenFlagFile>$(IntermediateOutputPath)R.cs.flag</_AndroidResgenFlagFile>
+	<_AndroidLinkFlag>$(IntermediateOutputPath)link.flag</_AndroidLinkFlag>
+	<_RemoveRegisterFlag>$(MonoAndroidIntermediateAssetsDir)shrunk\shrunk.flag</_RemoveRegisterFlag>
+	<_AcwMapFile>$(IntermediateOutputPath)acw-map.txt</_AcwMapFile>
+	<AndroidResgenNamespace Condition="'$(AndroidResgenNamespace)'==''" >$(RootNamespace)</AndroidResgenNamespace>
+</PropertyGroup>
+
+<!-- Resource Build -->
+
+<Target Name="UpdateAndroidResources"
+	DependsOnTargets="_CheckForDeletedResourceFile;_ComputeAndroidResourcePaths;_GenerateAndroidResourceDir;_UpdateAndroidResgen" />
+
+<!-- Handle a case where the designer file has been deleted, but the flag file still exists -->
+<Target Name="_CheckForDeletedResourceFile">
+	<Delete Files="$(_AndroidResgenFlagFile)"
+		Condition="Exists ('$(_AndroidResgenFlagFile)') AND '$(AndroidResgenFile)' != '' AND !Exists('$(AndroidResgenFile)')" />
+</Target>
+  
+<Target Name="_ComputeAndroidResourcePaths">
+	<AndroidComputeResPaths ResourceFiles="@(AndroidResource)" IntermediateDir="$(MonoAndroidResDirIntermediate)" Prefixes="$(MonoAndroidResourcePrefix)" LowercaseFilenames="True">
+		<Output ItemName="_AndroidResourceDest" TaskParameter="IntermediateFiles" />
+	</AndroidComputeResPaths>
+  
+	<MakeDir Directories="$(MonoAndroidResDirIntermediate)" />
+</Target>
+
+<Target Name="_GenerateAndroidResourceDir"
+	Inputs="$(MSBuildAllProjects);@(AndroidResource)"
+	Outputs="@(_AndroidResourceDest)">
+	<Copy SourceFiles="@(AndroidResource)" DestinationFiles="@(_AndroidResourceDest)" SkipUnchangedFiles="true" />
+	<RemoveUnknownFiles Files="@(_AndroidResourceDest)" Directory="$(MonoAndroidResDirIntermediate)" RemoveDirectories="true" />
+</Target>
+
+<!-- We want to call ResolveAssemblyReferences to resolve our references, 
+     but if we call the real one now, it won't run again when it's normally
+     supposed to, so we run a copy of it here instead. -->
+<Target Name="_AndroidResolveAssemblyReferences" DependsOnTargets="GetFrameworkPaths">
+  <CreateItem Include="@(Reference)" Exclude="$(AdditionalExplicitAssemblyReferences)">
+    <Output TaskParameter="Include" ItemName="_AndroidReference"/>
+  </CreateItem>
+
+  <CreateItem Include="$(AdditionalExplicitAssemblyReferences)">
+    <Output TaskParameter="Include" ItemName="_AndroidReference"/>
+  </CreateItem>
+
+  <ResolveAssemblyReference
+  Assemblies="@(_AndroidReference)"
+  AssemblyFiles="@(ChildProjectReferences)"
+  SearchPaths="$(AssemblySearchPaths)"
+  CandidateAssemblyFiles="@(Content);@(None)"
+  TargetFrameworkDirectories="$(TargetFrameworkDirectory)"
+  AllowedAssemblyExtensions="$(AllowedReferenceAssemblyFileExtensions)"
+  AllowedRelatedFileExtensions="$(AllowedReferenceRelatedFileExtensions)"
+  FindDependencies="true"
+  FindSatellites="true"
+  FindRelatedFiles="true"
+  TargetFrameworkMoniker="$(TargetFrameworkMoniker)"
+  TargetFrameworkMonikerDisplayName="$(TargetFrameworkMonikerDisplayName)"
+  TargetFrameworkVersion="$(TargetFrameworkVersion)"
+>
+    <Output TaskParameter="ResolvedFiles" ItemName="_AndroidResolvedFiles"/>
+    <Output TaskParameter="ResolvedFiles" ItemName="_AndroidReferencePath"/>
+    <Output TaskParameter="ResolvedDependencyFiles" ItemName="_AndroidResolvedDependencyFiles"/>
+    <Output TaskParameter="RelatedFiles" ItemName="_AndroidReferenceRelatedPaths"/>
+    <Output TaskParameter="SatelliteFiles" ItemName="_AndroidReferenceSatellitePaths"/>
+    <Output TaskParameter="CopyLocalFiles" ItemName="_AndroidReferenceCopyLocalPaths"/>
+  </ResolveAssemblyReference>
+</Target>
+  
+<Target Name="_ExtractLibraryProjectImports" DependsOnTargets="_AndroidResolveAssemblyReferences">
+	<!-- Build reference projects, in case they changed -->
+	<MSBuild Projects="@(ProjectReference)" Targets="Build">
+		<Output TaskParameter="TargetOutputs" ItemName="ResolvedLibraryOutputs" />
+	</MSBuild>
+
+	<ResolveLibraryProjectImports
+		Assemblies="@(_AndroidReferencePath);@(ResolvedLibraryOutputs)"
+		OutputDirectory="$(IntermediateOutputPath)">
+		<Output TaskParameter="ResolvedResourceDirectories" PropertyName="LibraryResourceDirectories" />
+	</ResolveLibraryProjectImports>
+</Target>
+
+<Target Name="_UpdateAndroidResgen"
+	Inputs="$(MSBuildAllProjects);@(_AndroidResourceDest)"
+	Outputs="$(_AndroidResgenFlagFile)"
+	Condition="'$(AndroidResgenFile)' != ''"
+	DependsOnTargets="_CheckForDeletedResourceFile;_ValidateAndroidPackageProperties;_ResolveMonoAndroidSdks;_ExtractLibraryProjectImports">
+
+	<!-- Create a temporary directory to work in -->
+	<CreateTemporaryDirectory>
+		<Output TaskParameter="TemporaryDirectory" PropertyName="ResgenTemporaryDirectory" />
+	</CreateTemporaryDirectory>
+
+	<!-- Create a dummy manifest file for aapt to work with -->
+	<CreateResgenManifest
+		ManifestOutputFile="$(ResgenTemporaryDirectory)\AndroidManifest.xml"
+		PackageName="$(_AndroidPackage)"
+	/>
+
+	<!-- Change cases so we support mixed case resource names -->
+	<ConvertResourcesCases
+		ResourceDirectory="$(MonoAndroidResDirIntermediate)"
+		AcwMapFile="$(_AcwMapFile)"
+	/>
+	
+	<GetExtraPackages IntermediateOutputPath="$(IntermediateOutputPath)">
+		<Output TaskParameter="ExtraPackages" PropertyName="AaptExtraPackages" />
+	</GetExtraPackages>
+  
+	<!-- Run aapt to generate R.java -->
+	<Aapt
+		AndroidSdkDirectory="$(_AndroidSdkDirectory)"
+		JavaPlatformJarPath="$(JavaPlatformJarPath)"
+		ManifestFile="$(ResgenTemporaryDirectory)\AndroidManifest.xml"
+		PackageName="$(_AndroidPackage)"
+		ResourceDirectory="$(MonoAndroidResDirIntermediate)"
+		JavaDesignerOutputDirectory="$(ResgenTemporaryDirectory)"
+		ResourceOutputFile="$(ResgenTemporaryDirectory)\resources.apk"
+		ExtraPackages="$(AaptExtraPackages)"
+		AdditionalResourceDirectories="$(LibraryResourceDirectories)"
+		ExtraArgs="$(AndroidResgenExtraArgs)"
+	/>
+	
+	<CopyGeneratedJavaResourceClasses
+		SourceTopDirectory="$(ResgenTemporaryDirectory)"
+		DestinationTopDirectory="$(IntermediateOutputPath)android"
+		PrimaryPackageName="$(_AndroidPackage)"
+		ExtraPackages="$(AaptExtraPackages)">
+		<Output TaskParameter="PrimaryJavaResgenFile" PropertyName="_GeneratedPrimaryJavaResgenFile" />
+	</CopyGeneratedJavaResourceClasses>
+
+  <!-- We need to strip out just filename from request Designer file location -->
+  <CreateItem Include="$(AndroidResgenFile)">
+    <Output TaskParameter="Include" ItemName="_AndroidResgenFilenameItems" />
+  </CreateItem>
+
+  <CreateProperty Value="@(_AndroidResgenFilenameItems->'%(Filename)%(Extension)')">
+    <Output TaskParameter="Value" PropertyName="AndroidResgenFilename"/>
+  </CreateProperty>
+
+  <!-- Parse primary R.java and create Resources.Designer.cs -->
+	<GenerateResourceDesigner
+		NetResgenOutputFile="$(ResgenTemporaryDirectory)\$(AndroidResgenFilename)"
+		JavaResgenInputFile="$(_GeneratedPrimaryJavaResgenFile)"
+		Namespace="$(AndroidResgenNamespace)"
+		Resources="@(_AndroidResourceDest)"
+		ResourceDirectory="$(MonoAndroidResDirIntermediate)"
+	/>
+
+	<!-- Only copy if the file contents changed, so users only get Reload? dialog for real changes -->
+	<CopyIfChanged
+		Source="$(ResgenTemporaryDirectory)\$(AndroidResgenFilename)"
+		Destination="$(AndroidResgenFile)"
+	/>
+
+	<!-- Delete our temporary directory -->
+	<RemoveDirFixed Directories="$(ResgenTemporaryDirectory)" />
+	
+	<!-- If there are no _AndroidResource items, create a blank file -->
+	<Delete Files="$(AndroidResgenFile)" Condition="'@(_AndroidResourceDest)'=='' And Exists ('$(AndroidResgenFile)')" />
+	<MakeDir Directories="$(MonoAndroidResDirIntermediate)" />
+	<Touch Files="$(AndroidResgenFile)" AlwaysCreate="true" Condition="!Exists('$(AndroidResgenFile)')" />
+	
+	<!-- Use a flag file for dependency tracking on this task, because we only change the actual
+	file when its contents change  -->
+	<Delete Files="$(_AndroidResgenFlagFile)" Condition="Exists ('$(_AndroidResgenFlagFile)')" />
+	<Touch Files="$(_AndroidResgenFlagFile)" AlwaysCreate="true" />
+</Target>
+
+
+<!-- Package Build -->
+<Target Name="PackageForAndroid"
+	DependsOnTargets="Build;_ValidateAndroidPackageProperties;_CompileAndroidPackage" />
+	
+<Target Name="_CompileAndroidPackage" DependsOnTargets="_Mandroid" />
+
+<Target Name="_ResolveAssemblies">
+	<!-- Find all the assemblies this app requires -->
+	<ResolveAssemblies
+		Assemblies="$(OutDir)$(TargetFileName);@(ReferencePath)"
+		I18nAssemblies="$(MandroidI18n)"
+		LinkMode="$(AndroidLinkMode)"
+		ReferenceAssembliesDirectory="$(TargetFrameworkDirectory)">
+			<Output TaskParameter="ResolvedAssemblies" ItemName="ResolvedAssemblies" />
+      <Output TaskParameter="ResolvedUserAssemblies" ItemName="ResolvedUserAssemblies" />
+      <Output TaskParameter="ResolvedFrameworkAssemblies" ItemName="ResolvedFrameworkAssemblies" />
+      <Output TaskParameter="ResolvedSymbols" ItemName="ResolvedSymbols" />
+  </ResolveAssemblies>
+
+  <!-- Store our resolved assemblies for FastDev -->
+  <WriteLinesToFile
+    File="$(IntermediateOutputPath)resolved_assemblies.txt"
+    Lines="@(ResolvedUserAssemblies)"
+    Overwrite="true" />
+</Target>
+
+<Target Name="_CreatePackageWorkspace">
+  <!-- Create our intermediate directory -->
+  <MakeDir Directories="$(MonoAndroidResDirIntermediate)" />
+
+  <!-- Create directory to package from -->
+  <MakeDir Directories="$(MonoAndroidIntermediateAssetsDir)" />
+</Target>
+  
+<Target Name="_GetMonoPlatformJarPath">
+  <GetMonoPlatformJar TargetFrameworkDirectory="$(TargetFrameworkDirectory)">
+    <Output TaskParameter="MonoPlatformJarPath" PropertyName="MonoPlatformJarPath" />
+  </GetMonoPlatformJar>
+</Target>
+
+<Target Name="_AddStaticResources" DependsOnTargets="_GetMonoPlatformJarPath">
+	<CopyResource ResourceName="machine.config" OutputPath="$(MonoAndroidIntermediateAssetsDir)machine.config" />
+  
+  <CopyResource
+    ResourceName="MonoRuntimeProvider.Shared.java"
+    OutputPath="$(MonoAndroidIntermediate)android\src\mono\MonoRuntimeProvider.java"
+    Condition="'$(AndroidUseSharedRuntime)' == 'true'" />
+
+  <CopyResource
+    ResourceName="MonoRuntimeProvider.Static.java"
+    OutputPath="$(MonoAndroidIntermediate)android\src\mono\MonoRuntimeProvider.java"
+    Condition="'$(AndroidUseSharedRuntime)' != 'true'" />
+
+  <CopyResource
+    ResourceName="Seppuku.java"
+    OutputPath="$(MonoAndroidIntermediate)android\src\mono\android\Seppuku.java"
+    Condition="'$(DebugSymbols)' == 'true'" />
+  
+  <Copy
+    SourceFiles="$(MonoPlatformJarPath)"
+    DestinationFiles="$(IntermediateOutputPath)android\bin\mono.android.jar"
+    SkipUnchangedFiles="true" />
+</Target>
+
+<Target Name="_CopyLinkingAssemblies"
+  DependsOnTargets="_ResolveAssemblies;_CreatePackageWorkspace"
+  Condition="'$(AndroidLinkMode)' != 'None'">  
+  
+  <!-- Create our intermediate directory -->
+  <MakeDir Directories="$(MonoAndroidIntermediateAssemblyDir)" Condition="!Exists ('$(MonoAndroidIntermediateAssemblyDir)')" />
+
+  <!-- Make a copy of every assembly we need in assemblies -->
+  <Copy
+    SourceFiles="@(ResolvedAssemblies)"
+    DestinationFiles="@(ResolvedAssemblies->'$(MonoAndroidIntermediateAssemblyDir)%(TargetPath)%(Filename)%(Extension)')"
+    SkipUnchangedFiles="true" />
+
+  <Copy
+    SourceFiles="@(ResolvedSymbols)"
+    DestinationFiles="@(ResolvedSymbols->'$(MonoAndroidIntermediateAssemblyDir)%(TargetPath)%(Filename)%(Extension)')"
+    SkipUnchangedFiles="true" />    
+</Target>
+
+<Target Name="_ResetLinkingFlag"
+  DependsOnTargets="_CopyLinkingAssemblies"
+  Inputs="@(ResolvedAssemblies);@(ResolvedSymbols)"
+  Outputs="@(ResolvedAssemblies->'$(MonoAndroidIntermediateAssemblyDir)%(TargetPath)%(Filename)%(Extension)');@(ResolvedSymbols->'$(MonoAndroidIntermediateAssemblyDir)%(TargetPath)%(Filename)%(Extension)')">
+
+  <!-- We modified the assemblies, delete the linking flag so we will re-link them -->
+  <Delete Files="$(_AndroidLinkFlag)" Condition="Exists ('$(_AndroidLinkFlag)')" />
+</Target>
+
+<Target Name="_LinkAssemblies"
+  DependsOnTargets="_ResolveAssemblies;_CreatePackageWorkspace;_ResetLinkingFlag"
+  Condition="'$(AndroidLinkMode)' != 'None'"
+  Inputs="$(MSBuildAllProjects);@(ResolvedAssemblies->'$(MonoAndroidIntermediateAssemblyDir)%(TargetPath)%(Filename)%(Extension)')"
+  Outputs="$(_AndroidLinkFlag)">
+    <LinkAssemblies
+      UseSharedRuntime="$(AndroidUseSharedRuntime)"
+      MainAssembly="$(MonoAndroidIntermediateAssemblyDir)$(TargetFileName)"
+      OutputDirectory="$(MonoAndroidIntermediateAssetsDir)"
+      I18nAssemblies="$(MandroidI18n)"
+      LinkMode="$(AndroidLinkMode)"
+      LinkSkip="$(AndroidLinkSkip)"
+      LinkDescriptions="@(LinkDescription)"
+      ResolvedAssemblies="@(ResolvedAssemblies->'$(MonoAndroidIntermediateAssemblyDir)%(TargetPath)%(Filename)%(Extension)')" />
+
+  <!-- We have to use a flag instead of normal outputs because linking can delete unused assemblies -->
+  <Touch Files="$(_AndroidLinkFlag)" AlwaysCreate="true" />
+
+</Target>
+  
+<Target Name="_PrepareAssemblies" DependsOnTargets="_LinkAssemblies;_ResolveAssemblies;_CreatePackageWorkspace">
+  <!-- Update our assembly lists to the copies for linking.  We also need to verify
+       they still exist cause linking will delete them if they aren't used -->
+  <GetFilesThatExist
+    Condition="'$(AndroidLinkMode)' != 'None'"
+    Files="@(ResolvedAssemblies->'$(MonoAndroidIntermediateAssetsDir)%(TargetPath)%(Filename)%(Extension)')">
+    <Output TaskParameter="FilesThatExist" ItemName="_ResolvedAssemblies" />
+  </GetFilesThatExist>
+
+  <GetFilesThatExist
+    Condition="'$(AndroidLinkMode)' != 'None'"
+    Files="@(ResolvedSymbols->'$(MonoAndroidIntermediateAssetsDir)%(TargetPath)%(Filename)%(Extension)')">
+    <Output TaskParameter="FilesThatExist" ItemName="_ResolvedSymbols" />
+  </GetFilesThatExist>
+
+  <GetFilesThatExist
+    Condition="'$(AndroidLinkMode)' != 'None'"
+    Files="@(ResolvedUserAssemblies->'$(MonoAndroidIntermediateAssetsDir)%(TargetPath)%(Filename)%(Extension)')">
+    <Output TaskParameter="FilesThatExist" ItemName="_ResolvedUserAssemblies" />
+  </GetFilesThatExist>
+
+  <GetFilesThatExist
+    Condition="'$(AndroidLinkMode)' != 'None'"
+    Files="@(ResolvedFrameworkAssemblies->'$(MonoAndroidIntermediateAssetsDir)%(TargetPath)%(Filename)%(Extension)')">
+    <Output TaskParameter="FilesThatExist" ItemName="_ResolvedFrameworkAssemblies" />
+  </GetFilesThatExist>
+
+  <CreateItem
+    Include="@(ResolvedAssemblies)"
+    Condition="'$(AndroidLinkMode)' == 'None'">
+    <Output TaskParameter="Include" ItemName="_ResolvedAssemblies" />
+  </CreateItem>
+
+  <CreateItem
+    Include="@(ResolvedSymbols)"
+    Condition="'$(AndroidLinkMode)' == 'None'">
+    <Output TaskParameter="Include" ItemName="_ResolvedSymbols" />
+  </CreateItem>
+
+  <CreateItem
+    Include="@(ResolvedUserAssemblies)"
+    Condition="'$(AndroidLinkMode)' == 'None'">
+    <Output TaskParameter="Include" ItemName="_ResolvedUserAssemblies" />
+  </CreateItem>
+
+  <CreateItem
+    Include="@(ResolvedFrameworkAssemblies)"
+    Condition="'$(AndroidLinkMode)' == 'None'">
+    <Output TaskParameter="Include" ItemName="_ResolvedFrameworkAssemblies" />
+  </CreateItem>
+
+  <CreateItem
+    Include="@(_ResolvedFrameworkAssemblies)"
+    Condition="'$(AndroidLinkMode)' == 'None' OR '$(AndroidUseSharedRuntime)' == 'true'">
+    <Output TaskParameter="Include" ItemName="_ShrunkFrameworkAssemblies" />
+  </CreateItem>
+
+  <CreateItem
+    Include="@(_ResolvedFrameworkAssemblies->'$(MonoAndroidIntermediateAssetsDir)shrunk\%(TargetPath)%(Filename)%(Extension)')"
+    Condition="'$(AndroidLinkMode)' != 'None' AND '$(AndroidUseSharedRuntime)' != 'true'">
+    <Output TaskParameter="Include" ItemName="_ShrunkFrameworkAssemblies" />
+  </CreateItem>
+
+</Target>
+
+<Target Name="_GenerateJavaStubs"
+  DependsOnTargets="_PrepareAssemblies"
+  Inputs="$(MSBuildAllProjects);@(_ResolvedAssemblies);$(_AndroidManifestAbs)"
+  Outputs="$(IntermediateOutputPath)android\bin\classes.dex;$(IntermediateOutputPath)android\AndroidManifest.xml;$(_AcwMapFile)">
+  <GenerateJavaStubs
+    ResolvedAssemblies="@(_ResolvedAssemblies)"
+    ResolvedUserAssemblies="@(_ResolvedUserAssemblies)"
+	ManifestTemplate="$(_AndroidManifestAbs)"
+	Debug="$(DebugSymbols)"
+	AndroidSdkPlatform="$(AndroidApiLevel)"
+	AndroidSdkDir="$(_AndroidSdkDirectory)"
+	PackageName="$(_AndroidPackage)"
+	OutputDirectory="$(IntermediateOutputPath)android"
+    UseSharedRuntime="$(AndroidUseSharedRuntime)"
+	EmbedAssemblies="$(EmbedAssembliesIntoApk)"
+	AcwMapFile="$(_AcwMapFile)">
+	<Output TaskParameter="AddOnPlatformLibraries" ItemName="AddOnPlatformLibraries" />
+  </GenerateJavaStubs>
+</Target>
+
+<Target Name="_GeneratePackageManagerJava"
+  DependsOnTargets="_GenerateJavaStubs;_AddStaticResources;_PrepareAssemblies"
+  Inputs="$(MSBuildAllProjects);@(_ResolvedAssemblies);@(_ResolvedUserAssemblies)"
+  Outputs="$(IntermediateOutputPath)android\src\mono\MonoPackageManager.java">
+  <!-- Create java needed for Mono runtime -->
+  <GeneratePackageManagerJava
+    ResolvedAssemblies="@(_ResolvedAssemblies)"
+    ResolvedUserAssemblies="@(_ResolvedUserAssemblies)"
+		OutputDirectory="$(IntermediateOutputPath)android\src\mono" 
+    UseSharedRuntime="$(AndroidUseSharedRuntime)"
+		AndroidSdkPlatform="$(AndroidApiLevel)" />
+</Target>
+
+<Target Name="_CreateBaseApk"
+  DependsOnTargets="_GenerateJavaStubs;_ResolveMonoAndroidSdks;_ExtractLibraryProjectImports"
+  Inputs="$(MSBuildAllProjects);$(IntermediateOutputPath)android\AndroidManifest.xml;@(_AndroidResourceDest);@(_AndroidAssetsDest);$(_AcwMapFile)"
+  Outputs="$(IntermediateOutputPath)android\bin\packaged_resources">
+  <!-- Change cases so we support mixed case resource names -->
+  <ConvertResourcesCases
+    ResourceDirectory="$(MonoAndroidResDirIntermediate)"
+    AcwMapFile="$(_AcwMapFile)" />
+
+  <!-- Create a temporary directory to work in, or else R.java will always get updated -->
+  <CreateTemporaryDirectory>
+    <Output TaskParameter="TemporaryDirectory" PropertyName="AaptTemporaryDirectory" />
+  </CreateTemporaryDirectory>
+	
+  <GetExtraPackages IntermediateOutputPath="$(IntermediateOutputPath)">
+    <Output TaskParameter="ExtraPackages" PropertyName="AaptExtraPackages" />
+  </GetExtraPackages>
+
+  <!-- Create the base .apk with resources and assets -->
+  <Aapt
+    AndroidSdkDirectory="$(_AndroidSdkDirectory)"
+    JavaPlatformJarPath="$(JavaPlatformJarPath)"
+    ManifestFile="$(IntermediateOutputPath)android\AndroidManifest.xml"
+    ResourceDirectory="$(MonoAndroidResDirIntermediate)"
+    JavaDesignerOutputDirectory="$(AaptTemporaryDirectory)"
+    ResourceOutputFile="$(IntermediateOutputPath)android\bin\packaged_resources"
+    ExtraPackages="$(AaptExtraPackages)"
+    AdditionalResourceDirectories="$(LibraryResourceDirectories)"
+    ExtraArgs="$(AndroidResgenExtraArgs)"
+    PackageName="$(_AndroidPackage)"
+    UncompressedFileExtensions="$(AndroidStoreUncompressedFileExtensions)"
+    AssetDirectory="$(ProjectDir)$(MonoAndroidAssetsDirIntermediate)" />
+
+  <!-- Only copy if the file contents changed, so users only get Reload? dialog for real changes -->
+  <CopyGeneratedJavaResourceClasses
+    SourceTopDirectory="$(AaptTemporaryDirectory)"
+    DestinationTopDirectory="$(IntermediateOutputPath)android\src"
+    PrimaryPackageName="$(_AndroidPackage)"
+    ExtraPackages="$(AaptExtraPackages)">
+    <Output TaskParameter="PrimaryJavaResgenFile" PropertyName="_GeneratedPrimaryJavaResgenFile" />
+  </CopyGeneratedJavaResourceClasses>
+
+  <!-- Delete our temporary directory -->
+  <RemoveDirFixed Directories="$(AaptTemporaryDirectory)" />
+</Target>
+
+<Target Name="_FindJavaStubFiles" DependsOnTargets="_GenerateJavaStubs">
+  <CreateItem
+    Include="$(IntermediateOutputPath)android\src\\**\*.java">
+    <Output TaskParameter="Include" ItemName="_JavaStubFiles" />
+  </CreateItem>
+</Target>
+
+<Target Name="_CompileJava"
+  DependsOnTargets="_GeneratePackageManagerJava;_FindJavaStubFiles;_AddStaticResources;_GetMonoPlatformJarPath;_ResolveMonoAndroidSdks;_ExtractLibraryProjectImports;_CreateBaseApk"
+  Inputs="$(MSBuildAllProjects);$(MonoPlatformJarPath);@(_JavaStubFiles);@(AndroidJavaSource);@(AddOnPlatformLibraries)"
+  Outputs="$(IntermediateOutputPath)android\bin\classes.dex">
+  <!-- Compile java code -->
+  <Javac
+    JavaPlatformJarPath="$(JavaPlatformJarPath)"
+    ClassesOutputDirectory="$(IntermediateOutputPath)android\bin\classes"
+		JavaSdkDirectory="$(_JavaSdkDirectory)"
+		TargetFrameworkDirectory="$(TargetFrameworkDirectory)"
+    StubSourceDirectory="$(IntermediateOutputPath)android\src"
+    MonoPlatformJarPath="$(MonoPlatformJarPath)"
+    JavaSourceFiles="@(AndroidJavaSource)"
+    JavaLibraries="@(AndroidJavaLibrary);"
+    LibraryProjectJars="$(IntermediateOutputPath)__library_projects__\*.jar"
+    AddOnPlatformLibraries="@(AddOnPlatformLibraries)" />
+</Target>
+
+<Target Name="_FindCompiledJavaFiles" DependsOnTargets="_CompileJava">
+  <CreateItem
+    Include="$(IntermediateOutputPath)android\bin\classes\\**\*.class">
+    <Output TaskParameter="Include" ItemName="_CompiledJavaFiles" />
+  </CreateItem>
+</Target>
+  
+<Target Name="_CompileDex"
+  DependsOnTargets="_FindCompiledJavaFiles;_GetMonoPlatformJarPath"
+  Inputs="$(MSBuildAllProjects);$(MonoPlatformJarPath);@(_CompiledJavaFiles);@(AndroidJavaSource)"
+  Outputs="$(IntermediateOutputPath)android\bin\classes.dex">
+  <!-- Compile java code to dalvik -->
+  <CompileToDalvik 
+    AndroidSdkDirectory="$(_AndroidSdkDirectory)"
+    ClassesOutputDirectory="$(IntermediateOutputPath)android\bin\classes"
+    JavaSdkDirectory="$(_JavaSdkDirectory)"
+    MonoPlatformJarPath="$(MonoPlatformJarPath)"
+    JavaSourceFiles="@(AndroidJavaSource)" 
+    JavaLibraries="@(AndroidJavaLibrary)"
+    LibraryProjectJars="$(IntermediateOutputPath)__library_projects__\*.jar"
+	UseDx="$(UseDx)"
+	/>
+</Target>
+
+<Target Name="_RemoveRegisterAttribute"
+  DependsOnTargets="_LinkAssemblies;_GenerateJavaStubs;_CompileDex;_CompileJava;_CreateBaseApk;_PrepareAssemblies"
+  Inputs="@(_ResolvedFrameworkAssemblies)"
+  Outputs="$(_RemoveRegisterFlag)"
+  Condition="'$(AndroidLinkMode)' != 'None' AND '$(AndroidUseSharedRuntime)' != 'true'">
+
+  <!-- Make a copy of every assembly into assets\shrunk -->
+  <Copy
+    SourceFiles="@(_ResolvedFrameworkAssemblies)"
+    DestinationFiles="@(_ShrunkFrameworkAssemblies)"
+    SkipUnchangedFiles="true" />
+  
+  <!-- Shrink Mono.Android.dll by removing attribute only needed for GenerateJavaStubs -->
+  <RemoveRegisterAttribute
+    Condition="'$(AndroidLinkMode)' != 'None' AND '$(AndroidUseSharedRuntime)' != 'true'"
+    ShrunkFrameworkAssemblies="@(_ShrunkFrameworkAssemblies)" />
+
+  <MakeDir Directories="$(MonoAndroidIntermediateAssetsDir)shrunk" />
+  <Touch Files="$(_RemoveRegisterFlag)" AlwaysCreate="true" />
+</Target>
+  
+<Target Name="_BuildApkEmbed"
+  DependsOnTargets="_RemoveRegisterAttribute;_LinkAssemblies;_GenerateJavaStubs;_CompileDex;_CompileJava;_CreateBaseApk;_PrepareAssemblies"
+  Inputs="$(MSBuildAllProjects);$(IntermediateOutputPath)android\bin\packaged_resources;@(_ResolvedUserAssemblies);@(_ShrunkFrameworkAssemblies);@(AndroidNativeLibrary);$(IntermediateOutputPath)android\bin\classes.dex"
+  Outputs="$(IntermediateOutputPath)android\bin\resources_and_assemblies"
+  Condition="$(EmbedAssembliesIntoApk)">
+
+  <!-- Put the assemblies and native libraries in the apk -->
+  <BuildApk
+    ApkInputPath="$(IntermediateOutputPath)android\bin\packaged_resources"
+    ApkOutputPath="$(IntermediateOutputPath)android\bin\resources_and_assemblies"
+    EmbedAssemblies="$(EmbedAssembliesIntoApk)"
+    ResolvedUserAssemblies="@(_ResolvedUserAssemblies)"
+    ResolvedFrameworkAssemblies="@(_ShrunkFrameworkAssemblies)"
+    NativeLibraries="@(AndroidNativeLibrary)"
+    DalvikClasses="$(IntermediateOutputPath)android\bin\classes.dex"
+    SupportedAbis="$(AndroidSupportedAbis)"
+    UseSharedRuntime="$(AndroidUseSharedRuntime)"
+    Debug="$(DebugSymbols)"
+    JavaSourceFiles="@(AndroidJavaSource)"
+    JavaLibraries="@(AndroidJavaLibrary)"
+    LibraryProjectJars="$(IntermediateOutputPath)__library_projects__\*.jar" />
+</Target>
+
+<Target Name="_BuildApkFastDev"
+  DependsOnTargets="_RemoveRegisterAttribute;_LinkAssemblies;_GenerateJavaStubs;_CompileDex;_CompileJava;_CreateBaseApk;_PrepareAssemblies"
+  Inputs="$(MSBuildAllProjects);$(IntermediateOutputPath)android\bin\packaged_resources;@(_ShrunkFrameworkAssemblies);@(AndroidNativeLibrary);$(IntermediateOutputPath)android\bin\classes.dex"
+  Outputs="$(IntermediateOutputPath)android\bin\resources_and_assemblies"
+  Condition="!$(EmbedAssembliesIntoApk)">
+
+  <!-- Put the assemblies and native libraries in the apk -->
+  <BuildApk
+    ApkInputPath="$(IntermediateOutputPath)android\bin\packaged_resources"
+    ApkOutputPath="$(IntermediateOutputPath)android\bin\resources_and_assemblies"
+    EmbedAssemblies="$(EmbedAssembliesIntoApk)"
+    ResolvedUserAssemblies="@(_ResolvedUserAssemblies)"
+    ResolvedFrameworkAssemblies="@(_ShrunkFrameworkAssemblies)"
+    NativeLibraries="@(AndroidNativeLibrary)"
+    DalvikClasses="$(IntermediateOutputPath)android\bin\classes.dex"
+    SupportedAbis="$(AndroidSupportedAbis)"
+    UseSharedRuntime="$(AndroidUseSharedRuntime)"
+    Debug="$(DebugSymbols)"
+    JavaSourceFiles="@(AndroidJavaSource)" 
+    JavaLibraries="@(AndroidJavaLibrary)"
+    LibraryProjectJars="$(IntermediateOutputPath)__library_projects__\*.jar" />
+</Target>
+
+<Target Name="_Mandroid"
+  DependsOnTargets="_BuildApkEmbed;_BuildApkFastDev"
+  Inputs="$(MSBuildAllProjects);$(IntermediateOutputPath)android\bin\resources_and_assemblies"
+  Outputs="$(ApkFile)">
+
+  <Delete Files="$(ApkFileIntermediate)" Condition="Exists ('$(ApkFileIntermediate)')" />
+  <Delete Files="$(ApkFile)" Condition="Exists ('$(ApkFile)')" />
+
+  <Mandroid
+		Assemblies="$(OutDir)$(TargetFileName);@(ReferencePath)"
+		I18nAssemblies="$(MandroidI18n)"
+		UncompressedFileExtensions="$(AndroidStoreUncompressedFileExtensions)"
+		BuildDirectory="$(MonoAndroidIntermediate)"
+		ReferenceAssembliesDirectory="$(TargetFrameworkDirectory)"
+		AndroidSdkDirectory="$(_AndroidSdkDirectory)"
+		JavaSdkDirectory="$(_JavaSdkDirectory)"
+		AndroidSdkPlatform="$(AndroidApiLevel)"
+		MonoAndroidToolsDirectory="$(_MonoAndroidToolsDirectory)"
+		ResourceDirectory="$(MonoAndroidResDirIntermediate)"
+		AssetDirectory="$(MonoAndroidAssetsDirIntermediate)"
+		ManifestTemplate="$(_AndroidManifestAbs)"
+		Package="$(_AndroidPackage)"
+		NativeLibrary="@(AndroidNativeLibrary)"
+		JavaSource="@(AndroidJavaSource)"
+		Debug="$(DebugSymbols)"
+		ExtraArgs="$(MandroidExtraArgs) $(MonoDroidExtraArgs)"
+		SupportedAbis="$(AndroidSupportedAbis)"
+		LinkMode="$(AndroidLinkMode)"
+		UseSharedRuntime="$(AndroidUseSharedRuntime)"
+		InputPackage="$(IntermediateOutputPath)android\bin\resources_and_assemblies"
+		OutputPackage="$(ApkFileIntermediate)" />
+
+  <Copy SourceFiles="$(ApkFileIntermediate)" DestinationFiles="$(ApkFile)" />
+
+  <Delete Files="$(_UploadFlagFile)" Condition="Exists ('$(_UploadFlagFile)')" />
+</Target>
+  
+
+<Target Name="_ResolveAndroidSigningKey" DependsOnTargets="_ResolveMonoAndroidSdks">
+	<!-- would use a PropertyGroup here but xbuild doesn't support it -->
+	<CreateProperty Value="$(_ApkDebugKeyStore)" Condition="'$(AndroidKeyStore)'==''">
+		<Output TaskParameter="Value" PropertyName="_ApkKeyStore"/>
+	</CreateProperty>
+	<CreateProperty Value="android" Condition="'$(AndroidKeyStore)'==''">
+		<Output TaskParameter="Value" PropertyName="_ApkStorePass"/>
+	</CreateProperty>
+	<CreateProperty Value="androiddebugkey" Condition="'$(AndroidKeyStore)'==''">
+		<Output TaskParameter="Value" PropertyName="_ApkKeyAlias"/>
+	</CreateProperty>
+	<CreateProperty Value="android" Condition="'$(AndroidKeyStore)'==''">
+		<Output TaskParameter="Value" PropertyName="_ApkKeyPass"/>
+	</CreateProperty>
+	
+	<CreateProperty Value="$(AndroidSigningKeyStore)" Condition="'$(AndroidKeyStore)'!=''">
+		<Output TaskParameter="Value" PropertyName="_ApkKeyStore"/>
+	</CreateProperty>
+	<CreateProperty Value="$(AndroidSigningStorePass)" Condition="'$(AndroidKeyStore)'!=''">
+		<Output TaskParameter="Value" PropertyName="_ApkStorePass"/>
+	</CreateProperty>
+	<CreateProperty Value="$(AndroidSigningKeyAlias)" Condition="'$(AndroidKeyStore)'!=''">
+		<Output TaskParameter="Value" PropertyName="_ApkKeyAlias"/>
+	</CreateProperty>
+	<CreateProperty Value="$(AndroidSigningKeyPass)" Condition="'$(AndroidKeyStore)'!=''">
+		<Output TaskParameter="Value" PropertyName="_ApkKeyPass"/>
+	</CreateProperty>
+	
+	<AndroidCreateDebugKey
+		JavaSdkDirectory="$(_JavaSdkDirectory)"
+		KeyStore="$(_ApkKeyStore)"
+		KeyAlias="$(_ApkKeyAlias)"
+		KeyPass="$(_ApkKeyPass)"
+		StorePass="$(_ApkStorePass)"
+		Condition="'$(AndroidKeyStore)'=='' and !Exists ('$(_ApkKeyStore)')" />
+</Target>
+
+<Target Name="_Sign"
+	Inputs="$(MSBuildAllProjects);$(ApkFileIntermediate)"
+	Outputs="$(ApkFileSigned)"
+	DependsOnTargets="Build;_ResolveAndroidSigningKey">
+	<AndroidSignPackage
+		JavaSdkDirectory="$(_JavaSdkDirectory)"
+		UnsignedApk="$(ApkFileIntermediate)"
+		SignedApk="$(OutDir)$(_AndroidPackage)-Signed-Unaligned.apk"
+		KeyStore="$(_ApkKeyStore)"
+		KeyAlias="$(_ApkKeyAlias)"
+		KeyPass="$(_ApkKeyPass)"
+		StorePass="$(_ApkStorePass)" />
+	<Message Text="Signed android package '$(ApkFileSigned)'" />
+	<Delete Files="$(ApkFileSigned)" />
+	<AndroidZipAlign
+		AndroidSdkDirectory="$(_AndroidSdkDirectory)"
+		Source="$(OutDir)$(_AndroidPackage)-Signed-Unaligned.apk"
+		Destination="$(ApkFileSigned)" />
+	<Message Text="Aligned android package '$(ApkFileSigned)'" />
+	<Delete Files="$(OutDir)$(_AndroidPackage)-Signed-Unaligned.apk" />
+</Target>
+
+<Target Name="SignAndroidPackage" DependsOnTargets="Build;PackageForAndroid;_Sign">
+</Target>
+
+<PropertyGroup>
+	<_IntermediatePdbFile>$(IntermediateOutputPath)$(TargetName).pdb</_IntermediatePdbFile>
+</PropertyGroup>
+
+<Target Name="ConvertDebuggingFiles"
+	Condition="'$(DebugSymbols)'=='true' And Exists ('$(_IntermediatePdbFile)') And '$(OS)' == 'Windows_NT'"
+	DependsOnTargets="_ConvertDebuggingFiles">
+	<CreateItem Include="$(OutDir)$(TargetFileName).mdb" Condition="Exists('$(OutDir)$(TargetFileName).mdb')">
+		<Output TaskParameter="Include" ItemName="FileWrites" />
+	</CreateItem>
+</Target>
+
+<Target Name="_ConvertDebuggingFiles"
+	Inputs="$(OutDir)$(TargetFileName);$(_IntermediatePdbFile)"
+	Outputs="$(OutDir)$(TargetFileName).mdb" 
+	DependsOnTargets="_ValidateAndroidPackageProperties">
+	<ConvertDebuggingFiles InputFiles="$(OutDir)$(TargetFileName)" />
+</Target>
+
+
+<!-- Callable targets -->
+
+<Target Name="BuildApk"	DependsOnTargets="Build;_ResolveMonoAndroidSdks;_ValidateAndroidPackageProperties;_BuildApkEmbed;_BuildApkFastDev" />
+<Target Name="Package"	DependsOnTargets="Build;_Mandroid" />
+<Target Name="Sign" 	DependsOnTargets="Build;_ResolveAndroidSigningKey;_Sign" />
+
+
+<!-- Cleaning -->
+
+<Target Name="_CleanMonoAndroidIntermediateDir">
+	<RemoveDirFixed Directories="$(MonoAndroidIntermediate)android" Condition="Exists ('$(MonoAndroidIntermediate)android')" />
+	<RemoveDirFixed Directories="$(MonoAndroidIntermediate)res" Condition="Exists ('$(MonoAndroidIntermediate)res')" />
+	<RemoveDirFixed Directories="$(MonoAndroidIntermediate)__library_projects__" Condition="Exists ('$(MonoAndroidIntermediate)__library_projects__')" />
+	<Delete Files="$(MonoAndroidIntermediate)R.cs.flag" />
+	<Delete Files="$(MonoAndroidIntermediate)acw-map.txt" />
+	<Delete Files="$(MonoAndroidIntermediate)jarlist.cache" />
+	<Delete Files="$(MonoAndroidIntermediate)resolved_assemblies.txt" />
+</Target>
+
+<Target Name="_CollectMonoAndroidOutputs" DependsOnTargets="_ValidateAndroidPackageProperties">
+	<CreateItem Include="$(ApkFile)">
+		<Output TaskParameter="Include" ItemName="FileWrites"/>
+	</CreateItem>
+	<CreateItem Include="$(ApkFileIntermediate)">
+		<Output TaskParameter="Include" ItemName="FileWrites"/>
+	</CreateItem>
+	<!-- FIXME: check files exists -->
+	<CreateItem Include="@(_AndroidResourceDest)">
+		<Output TaskParameter="Include" ItemName="FileWrites"/>
+	</CreateItem>
+	<CreateItem Include="$(_AndroidResgenFlagFile)">
+		<Output TaskParameter="Include" ItemName="FileWrites"/>
+	</CreateItem>
+	<CreateItem Include="$(ApkFileSigned)">
+		<Output TaskParameter="Include" ItemName="FileWrites"/>
+	</CreateItem>
+	<CreateItem Include="$(_UploadFlagFile)">
+		<Output TaskParameter="Include" ItemName="FileWrites"/>
+	</CreateItem>
+</Target>
+
+<!-- Install targets -->
+
+<Target Name="_Upload" Condition="'$(AndroidApplication)'!='' And $(AndroidApplication)">
+	<InstallPackageAssemblies
+			AdbInstallOptions="$(AdbInstallOptions)"
+			AdbOptions="$(AdbOptions)"
+			AdbTarget="$(AdbTarget)"
+			AndroidApiLevel="$(AndroidApiLevel)"
+			ApkFileSigned="$(ApkFileSigned)"
+			EmbedAssemblies="$(EmbedAssembliesIntoApk)"
+			PackageName="$(_AndroidPackage)"
+			ResolvedUserAssemblies="@(_ResolvedUserAssemblies)"
+			External="$(DeployExternal)"
+			ManifestTemplate="$(IntermediateOutputPath)android\AndroidManifest.xml"
+			AndroidPlatformToolsDirectory="$(_AndroidPlatformToolsDirectory)"
+			UseSharedRuntime="$(AndroidUseSharedRuntime)"
+			/>
+</Target>
+
+<Target Name="Install" DependsOnTargets="SignAndroidPackage;_Upload" Condition="'$(AndroidApplication)'!='' And $(AndroidApplication)" />
+
+<Target Name="Uninstall" DependsOnTargets="_ValidateAndroidPackageProperties" Condition="'$(AndroidApplication)'!='' And $(AndroidApplication)">
+	<Exec Command='"$(_AndroidPlatformToolsDirectory)adb" $(AdbTarget) $(AdbOptions) uninstall $(_AndroidPackage) $(AdbUninstallOptions)' />
+</Target>
+</Project>

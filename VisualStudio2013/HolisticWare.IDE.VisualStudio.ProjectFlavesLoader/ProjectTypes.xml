@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ProjectTypes>
+	<ProjectType>
+		<GUID>
+			786C830F-07A1-408B-BD7F-6EE04809D6DB
+		</GUID>
+		<Description>
+			Portable Class Library (PCL)
+		</Description>
+		<Name>
+			PortableClassLibrary
+		</Name>
+	</ProjectType>
+	<ProjectType>
+		<GUID>
+			948B3504-5B70-4649-8FE4-BDE1FB46EC69
+		</GUID>
+		<Description>
+			Mono Mac
+		</Description>
+		<Name>
+			MonoMac
+		</Name>
+	</ProjectType>
+	<ProjectType>
+		<GUID>
+			E613F3A2-FE9C-494F-B74E-F63BCB86FEA6
+		</GUID>
+		<Description>
+			MonoTouch
+		</Description>
+		<Name>
+			MonoTouch
+		</Name>
+	</ProjectType>
+	<ProjectType>
+		<GUID>
+			6BC8ED88-2882-458C-8E55-DFD12B67127B
+		</GUID>
+		<Description>
+			MonoTouch 5
+		</Description>
+		<Name>
+			MonoTouch5
+		</Name>
+	</ProjectType>
+	<ProjectType>
+		<GUID>
+			F5B4F3BC-B597-4E2B-B552-EF5D8A32436F
+		</GUID>
+		<Description>
+			MonoTouch 5 Binding
+		</Description>
+		<Name>
+			MonoTouch5Binding
+		</Name>
+	</ProjectType>
+	<ProjectType>
+		<GUID>
+			C089C8C0-30E0-4E22-80C0-CE093F111A43
+		</GUID>
+		<Description>
+			WindowsPhone8
+		</Description>
+		<Name>
+			WindowsPhone8
+		</Name>
+	</ProjectType>
+	<ProjectType>
+		<GUID>
+			4D628B5B-2FBC-4AA6-8C16-197242AEB884
+		</GUID>
+		<Description>
+			Compact Famework Smart Device
+		</Description>
+		<Name>
+			CompactFameworkSmartDevice
+		</Name>
+	</ProjectType>
+
+</ProjectTypes>

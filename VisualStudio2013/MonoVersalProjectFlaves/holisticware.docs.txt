@@ -1,0 +1,172 @@
+﻿GUIDs
+
+	http://onlinecoder.blogspot.com/2009/09/visual-studio-projects-project-type.html
+	http://www.mztools.com/articles/2008/mz2008017.aspx
+	http://www.mztools.com/articles/2007/MZ2007016.aspx
+
+Project Type Description						Project Type Guid
+Windows (C#)									{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}
+Windows (VB.NET)								{F184B08F-C81C-45F6-A57F-5ABD9991F28F}
+Windows (Visual C++)							{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}
+Web Application									{349C5851-65DF-11DA-9384-00065B846F21}
+Web Site										{E24C65DC-7377-472B-9ABA-BC803B73C61A}
+Distributed System								{F135691A-BF7E-435D-8960-F99683D2D49C}
+Windows Communication Foundation (WCF)			{3D9AD99F-2412-4246-B90B-4EAA41C64699}
+Windows Presentation Foundation (WPF)			{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548}
+Visual Database Tools							{C252FEB5-A946-4202-B1D4-9916A0590387}
+Database										{A9ACE9BB-CECE-4E62-9AA4-C7E7C5BD2124}
+Database (other project types)					{4F174C21-8C12-11D0-8340-0000F80270F8}
+Test											{3AC096D0-A1C2-E12C-1390-A8335801FDAB}
+Legacy (2003) Smart Device (C#)					{20D4826A-C6FA-45DB-90F4-C717570B9F32}
+Legacy (2003) Smart Device (VB.NET)				{CB4CE8C6-1BDB-4DC7-A4D3-65A1999772F8}
+Smart Device (C#)								{4D628B5B-2FBC-4AA6-8C16-197242AEB884}
+Smart Device (VB.NET)							{68B1623D-7FB9-47D8-8664-7ECEA3297D4F}
+Workflow (C#)									{14822709-B5A1-4724-98CA-57A101D1B079}
+Workflow (VB.NET)								{D59BE175-2ED0-4C54-BE3D-CDAA9F3214C8}
+Deployment Merge Module							{06A35CCD-C46D-44D5-987B-CF40FF872267}
+Deployment Cab									{3EA9E505-35AC-4774-B492-AD1749C4943A}
+Deployment Setup								{978C614F-708E-4E1A-B201-565925725DBA}
+Deployment Smart Device Cab						{AB322303-2255-48EF-A496-5904EB18DA55}
+Visual Studio Tools for Applications (VSTA)		{A860303F-1F3F-4691-B57E-529FC101A107}
+Visual Studio Tools for Office (VSTO)			{BAA0C2D2-18E2-41B9-852F-F413020CAA33}
+SharePoint Workflow								{F8810EC1-6754-47FC-A15F-DFABD2E3FA90}
+XNA (Windows)									{6D335F3A-9D43-41b4-9D22-F6F17C4BE596}
+XNA (XBox)										{2DF5C3F4-5A5F-47a9-8E94-23B4456F55E2}
+XNA (Zune)										{D399B71A-8929-442a-A9AC-8BEC78BB2433}
+SharePoint (VB.NET)								{EC05E597-79D4-47f3-ADA0-324C4F7C7484}
+SharePoint (C#)									{593B0543-81F6-4436-BA1E-4747859CAAE2}
+SharePoint Solution								{9E5D3E2D-E4E2-418e-8D80-2F0DA9A94F9A}
+Silverlight										{A1591282-1198-4647-A2B1-27E5FF5F6F3B}
+ASP.net MVC1									{603c0e0b-db56-11dc-be95-000d561079b0}
+ASP.net MVC2									{F85E285D-A4E0-4152-9332-AB1D724D3325}
+ASP.net MVC3									{E53F8FEA-EAE0-44A6-8774-FFD645390401}
+ASP.net MVC4									{E3E379DF-F4C6-4180-9B81-6769533ABE47}
+
+
+	http://weblogs.asp.net/leftslipper/archive/2009/01/20/opening-an-asp-net-mvc-project-without-having-asp-net-mvc-installed-the-project-type-is-not-supported-by-this-installation.aspx
+	The ProjectTypeGuids used by each version of MVC are different.
+	MVC 1: {603c0e0b-db56-11dc-be95-000d561079b0}
+	MVC 2: {F85E285D-A4E0-4152-9332-AB1D724D3325}
+	MVC 3: {E53F8FEA-EAE0-44A6-8774-FFD645390401}
+	http://weblogs.asp.net/leftslipper/archive/2009/01/20/opening-an-asp-net-mvc-project-without-having-asp-net-mvc-installed-the-project-type-is-not-supported-by-this-installation.aspxThe other two GUIDs represent Web Application and Class Library project types 
+		({349c5851-65df-11da-9384-00065b846f21} and {F184B08F-C81C-45F6-A57F-5ABD9991F28F}).
+	MVC 4:  {E3E379DF-F4C6-4180-9B81-6769533ABE47}
+
+http://stackoverflow.com/questions/2911565/what-is-the-significance-of-projecttypeguids-tag-in-the-visual-studio-project-fi
+
+Windows (C#)            {FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}
+Windows (VB.NET)         {F184B08F-C81C-45F6-A57F-5ABD9991F28F}
+Windows (Visual C++)     {8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}
+Web Application          {349C5851-65DF-11DA-9384-00065B846F21}
+Web Site                 {E24C65DC-7377-472B-9ABA-BC803B73C61A}
+WCF                    {3D9AD99F-2412-4246-B90B-4EAA41C64699}
+WPF                       {60DC8134-EBA5-43B8-BCC9-BB4BC16C2548}
+XNA (Windows)          {6D335F3A-9D43-41b4-9D22-F6F17C4BE596}
+XNA (XBox)             {2DF5C3F4-5A5F-47a9-8E94-23B4456F55E2}
+XNA (Zune)             {D399B71A-8929-442a-A9AC-8BEC78BB2433}
+Silverlight              {A1591282-1198-4647-A2B1-27E5FF5F6F3B}
+ASP.NET MVC              {F85E285D-A4E0-4152-9332-AB1D724D3325}
+Test                     {3AC096D0-A1C2-E12C-1390-A8335801FDAB}   
+
+
+ProjectTypeGuids is used by Visual Studio for project aggregation. In your example you have a
+WPF (represented by 60dc8134-eba5-43b8-bcc9-bb4bc16c2548) C# project 
+(represented by FAE04EC0-301F-11D3-BF4B-00C04F79EFBC).
+
+If you have a custom project type working with both .xaml and .cs you should try to add 
+your custom project guid (specified by your project factory GUID) as below:
+
+<ProjectTypeGuids>
+	{YourProjectFactoryClassGUID};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}
+</ProjectTypeGuids>
+
+
+
+http://social.msdn.microsoft.com/Forums/en/vsx/thread/d9d05cdc-96a1-4044-95d8-a4f8885a660a	
+
+
+
+
+
+
+
+
+
+Sample
+
+	MonoMac
+	    <ProjectTypeGuids>
+			{948B3504-5B70-4649-8FE4-BDE1FB46EC69};
+			{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}
+		</ProjectTypeGuids>
+
+	\Jamie-Bryant\VSMonoByMoljac\MonoDevelop.MonoMac\MonoDevelop.MonoMac.csproj : error  : 
+	Unable to read the project file 'MonoDevelop.MonoMac.csproj'. 
+	C:\Program Files\MSBuild\Mono\MonoMac\v0.0\Mono.MonoMac.targets(24,5): 
+	The imported project "C:\Program Files\MSBuild\Mono\MonoMac\v0.0\Novell.MonoDroid.Common.targets" 
+	was not found. 
+	Confirm that the path in the <Import> declaration is correct, and that the file  exists on disk.
+
+	MonoTouch Library
+	    <ProjectTypeGuids>
+			{6BC8ED88-2882-458C-8E55-DFD12B67127B};
+			{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}		<!-- c# project -->
+		</ProjectTypeGuids>
+
+
+	MonoTouch Binding Project
+	    <ProjectTypeGuids>
+			{F5B4F3BC-B597-4E2B-B552-EF5D8A32436F};		<!-- MonoTouch bindings -->
+			{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}		<!-- c# project -->
+		</ProjectTypeGuids>
+
+		\Jamie-Bryant\VSMonoByMoljac\MonoDevelop.MonoTouchBinding\MonoDevelop.MonoTouchBinding.csproj : 
+		error  : 
+		Unable to read the project file 'MonoDevelop.MonoTouchBinding.csproj'. 
+		\Jamie-Bryant\VSMonoByMoljac\MonoDevelop.MonoTouchBinding\MonoDevelop.MonoTouchBinding.csproj(42,3): 
+		The imported project "C:\Program Files\MSBuild\Xamarin\Xamarin.ObjcBinding.CSharp.targets" 
+		was not found. 
+		Confirm that the path in the <Import> declaration is correct, and that the file exists on disk.
+
+	MonoDevelop Portable Library
+	    <ProjectTypeGuids>
+			{786C830F-07A1-408B-BD7F-6EE04809D6DB};		<!-- Portable class library -->
+			{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}		<!-- c# project -->
+		</ProjectTypeGuids>
+
+		\Jamie-Bryant\VSMonoByMoljac\MonoDevelop.PortableLibrary\MonoDevelop.PortableLibrary.csproj : error  : 
+		Unable to read the project file 'MonoDevelop.PortableLibrary.csproj'. 
+		\Jamie-Bryant\VSMonoByMoljac\MonoDevelop.PortableLibrary\MonoDevelop.PortableLibrary.csproj(43,3): 
+		The imported project "C:\Program Files\MSBuild\Microsoft\Portable\v4.0\Microsoft.Portable.CSharp.targets" 
+		was not found. 
+		Confirm that the path in the <Import> declaration is correct, and that the file exists on disk.
+
+
+		from
+		https://github.com/mono/mono/tree/master/mcs/tools/xbuild/xbuild
+
+
+	Compact Framework Smart Device
+	    <ProjectTypeGuids>
+			{4D628B5B-2FBC-4AA6-8C16-197242AEB884};		<!-- Smart Device (C#) -->
+			{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}		<!-- c# project -->
+		</ProjectTypeGuids>
+
+		c:\WIndows\Microsoft.Net\Framework\v4.0.30319\Microsoft.CompactFramework.Csharp.targets
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		http://robrich.org/archive/2010/04/20/working-with-both-vs-2010-and-2008-on-the-team.aspx
+		
+		
